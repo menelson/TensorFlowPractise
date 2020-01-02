@@ -66,7 +66,6 @@ y = tf.placeholder(tf.int32, shape=(None), name="y")
 # Now create a DNN
 # Alternatively, the contrib dense() can be also be used
 with tf.name_scope("dnn"):
-	he_init = tf.variance_scaling_initializer()
 	hidden1 = neuron_layer(X, n_hidden1, name="hidden1",
 			activation=tf.nn.relu)
 	hidden2 = neuron_layer(hidden1, n_hidden2, name="hidden2",
@@ -121,24 +120,25 @@ batch_size = 50
 # Load a TensorFlow session to run the training
 with tf.Session() as sess:
 	init.run() # Init node initializes all of the variables
-	for epoch in range(n_epochs): # A single epoch is a complete iteration through the data
-	# Iterate through the number of mini-batches at each epoch
-		for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
-			sess.run(training_op, feed_dict={X: X_batch, y: y_batch}) # Run the training operation
+	
+	for epoch in range(n_epochs): # A single epoch is a complete iteration through the data	
+		# Iterate through the number of mini-batches at each epoch
+			for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
+				sess.run(training_op, feed_dict={X: X_batch, y: y_batch}) # Run the training operation
 
-# At the end of each epoch, evaluate the model on the last mini-batch and the validation set
-acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
-acc_val = accuracy.eval(feed_dict={X: X_valid, y: y_valid})
-print(epoch, "Batch accuracy:", acc_batch, "Val accuracy:", acc_val)
+			# At the end of each epoch, evaluate the model on the last mini-batch and the validation set
+			acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
+			acc_val = accuracy.eval(feed_dict={X: X_valid, y: y_valid})
+			print(epoch, "Batch accuracy:", acc_batch, "Val accuracy:", acc_val)
 
-# Save the TensorFlow session
-save_path = saver.save(sess, "./my_model_final.ckpt")
+	# Save the TensorFlow session
+	save_path = saver.save(sess, "./my_model_final.ckpt")
 
 #######################################
 # Use neural net to make predictions
 #######################################
 with tf.Session() as sess:
-	save_path.restore(sess, "./my_model_final.ckpt")
+	saver.restore(sess, "./my_model_final.ckpt")
 	X_new_scaled = X_test[:20]
 	Z = logits.eval(feed_dict={X: X_new_scaled})
 	y_pred = np.argmax(Z, axis=1)
