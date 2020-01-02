@@ -16,6 +16,9 @@ import matplotlib.pyplot as plt
 # TensorFlow is essential
 import tensorflow as tf
 
+# Necessary fix in order to use the v1 tensorflow functionality 
+tf.disable_v2_behavior()
+
 def reset_graph(seed=42):
     tf.reset_default_graph()
     tf.set_random_seed(seed)
