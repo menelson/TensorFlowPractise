@@ -21,7 +21,7 @@ def neuron_layer(X, n_neurons, name, activation=None):
 		stddev = 2 / np.sqrt(n_inputs)
 
 		# Create the relevant shape for the weight matrix, based on connections between inputs and neurons
-		init = tf.truncated_normal((n_inputs, n_neurons), stdev=stdev) # Randomize with a Gaussian
+		init = tf.truncated_normal((n_inputs, n_neurons), stddev=stddev) # Randomize with a Gaussian
 		W = tf.Variable(init, name="kernel") # Random weights initiallu
 		b = tf.Variable(tf.zeros([n_neurons]), name="bias") # Bias, initialized to zero
 		Z = tf.matmul(X, W) + b
